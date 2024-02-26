@@ -1,10 +1,13 @@
-﻿namespace C_Sharp_LINQ_lab_2
+﻿using System.Security.Cryptography;
+
+namespace C_Sharp_LINQ_lab_2
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            ShowList(Task1(new string[] { "A2", "A1", "A3" }, new string[] { "B1", "B2", "B3" }));
+            //ShowList(Task1(new List<string>() { "A2", "A1", "A3" }, new List<string>() { "B1", "B2", "B3" }));
+            ShowList(Task2(new List<int>() {1,2,3,4,5 }, new List<int>() {11,19,21,31,55 }));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -25,7 +28,27 @@
         /// <param name="A">Строковая последовательность A</param>
         /// <param name="B">Строковая Последовательность B</param>
         /// <returns></returns>
-        static List<string> Task1(string[] A, string[] B)
+        static List<string> Task1(List<string> A, List<string> B)
             => A.OrderBy(a => a).SelectMany(a1 => B.OrderByDescending(b => b).Select(b => $"{a1}={b}")).ToList();
+        /// <summary>
+        /// Даны последовательности положительных целых чисел A и B; все числа в
+        /// последовательности A различны.Получить последовательность строк вида «S:E», где S
+        /// обозначает среднее арифметическое тех чисел из B, которые оканчиваются на ту же
+        /// цифру, что и число E – один из элементов последовательности A(например, «74:23»); если
+        /// для числа E не найдено ни одного подходящего числа из последовательности B, то в
+        /// качестве S указать 0. Расположить элементы полученной последовательности по
+        /// возрастанию значений найденных сумм, а при равных суммах – по убыванию значений
+        /// элементов A.
+        /// </summary>
+        /// <param name="A">Последовательности положительных целых чисел</param>
+        /// <param name="B">Последовательности положительных целых чисел</param>
+        /// <returns></returns>
+        static List<string> Task2(List<int> A, List<int> B)
+            => A.Select(a1 => $"{A.SelectMany(a => B.Where(b => a1 % 10 == b % 10)).DefaultIfEmpty(0).Average()}" +
+            $":{a1}").OrderBy(a => Convert.ToInt32(a.Split(':').First())).
+            ThenByDescending(a => Convert.ToInt32(a.Split(':').Last())).ToList();
+    
+        
+    
     }
 }
