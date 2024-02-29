@@ -10,7 +10,8 @@ namespace C_Sharp_LINQ_lab_2
             //ShowList(Task1(new List<string>() { "A2", "A1", "A3" }, new List<string>() { "B1", "B2", "B3" }));
             //ShowList(Task2(new List<int>() {1,2,3,4,5 }, new List<int>() {11,19,21,31,55 }));
             //ShowList(Task3(GetDataDepartment(), GetDataEmployees()));
-            ShowList(Task4(GetDataClients(), 3));
+            //ShowList(Task4(GetDataClients(), 2));
+            ShowList(Task5(GetDataStudent()));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -84,6 +85,20 @@ namespace C_Sharp_LINQ_lab_2
         static List<string> Task4(List<Client> clients, int k)
             => clients.Where(c => c.Id == k).GroupBy(c => c.Year).Select(c => new { tr = c.MinBy(b => b.Hour) }).
             OrderBy(c => c.tr.Month).Select(c => $"{c.tr.Hour} {c.tr.Year} {c.tr.Hour}").DefaultIfEmpty("Нет данных").ToList();
+        /// <summary>
+        /// Исходная последовательность содержит сведения об абитуриентах. Каждый
+        /// элемент последовательности включает следующие поля:
+        /// <Номер школы> <Год поступления> <Фамилия>
+        /// Для каждого года, присутствующего в исходных данных, вывести число различных
+        /// школ, которые окончили абитуриенты, поступившие в этом году(вначале указывать число
+        /// школ, затем год). Сведения о каждом годе выводить на новой строке и упорядочивать по
+        /// возрастанию числа школ, а для совпадающих чисел — по возрастанию номера года
+        /// </summary>
+        /// <param name="students"></param>
+        /// <returns></returns>
+        static List<string> Task5(List<Student> students)
+            => students.GroupBy(s => s.Year).Select(s => new { Year = s.Key, Count = s.Count() })
+            .OrderBy(s => s.Count).ThenBy(s => s.Year).Select(s => $"{s.Year} {s.Count}").ToList();
         static List<Department> GetDataDepartment()
             => new List<Department>()
             {
@@ -117,7 +132,22 @@ namespace C_Sharp_LINQ_lab_2
                 new Client(2,3000,1,5),
                 new Client(2,3000,2,8),
             };
-
+        static List<Student> GetDataStudent()
+            => new List<Student>()
+            {
+                new Student(1, 2001, "Иванов"),
+                new Student(1, 2001, "Петров"),
+                new Student(1, 2001, "Сидоров"),
+                new Student(2, 2001, "Иванов"),
+                new Student(2, 2001, "Петров"),
+                new Student(3, 2001, "Сидоров"),
+                new Student(2, 2002, "Иванов"),
+                new Student(2, 2002, "Петров"),
+                new Student(3, 2002, "Сидоров"),
+                new Student(2, 2002, "Иванов"),
+                new Student(2, 2003, "Петров"),
+                new Student(3, 2003, "Сидоров")
+            };
 
     }
 }
