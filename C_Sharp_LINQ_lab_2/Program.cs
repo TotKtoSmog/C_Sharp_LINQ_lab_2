@@ -1,5 +1,5 @@
 ﻿using C_Sharp_LINQ_lab_2.Class;
-using System.Security.Cryptography;
+using System.Data;
 
 namespace C_Sharp_LINQ_lab_2
 {
@@ -7,7 +7,7 @@ namespace C_Sharp_LINQ_lab_2
     {
         static void Main(string[] args)
         {
-            ShowList(Task6(GetDataStudent()));
+            ShowList(Task7(GetDataDebtor()));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -111,6 +111,21 @@ namespace C_Sharp_LINQ_lab_2
             var temp = students.GroupBy(s => s.Year).Select(s => new { Year = s.Key, Count = s.Count() }).ToList();
             return temp.Where(t => t.Count == temp.Max(tt => tt.Count) || t.Count == temp.Min(tt => tt.Count)).OrderByDescending(t => t.Count).ThenBy(s => s.Year).Select(s => $"{s.Year} {s.Count}").ToList();
         }
+        
+        static List<string> Task7(List<Debtor> debtors)
+            => debtors
+            .Select(d => new
+            {
+                Porch = (d.Anumber + 35) / 36,
+                d.Debt,
+                d.Sname,
+                d.Anumber
+            }).GroupBy(d => d.Porch).OrderBy(d => d.Key)
+            .SelectMany(d => d
+                .OrderByDescending(i => i.Debt)
+                .Take(3)
+                .Select(i => new { item = $"{i.Debt} {d.Key} {i.Anumber} {i.Sname}", i.Debt }))
+            .OrderByDescending(i => i.Debt).Select(i => i.item).ToList();
         static List<Department> GetDataDepartment()
             => new List<Department>()
             {
@@ -160,6 +175,25 @@ namespace C_Sharp_LINQ_lab_2
                 new Student(2, 2003, "Петров"),
                 new Student(3, 2003, "Сидоров")
             };
-
+        static List<Debtor> GetDataDebtor()
+            => new List<Debtor>()
+            {
+                new Debtor(1234.80, "Петухов", 90),
+                new Debtor(520.50, "Иванов", 1),
+                new Debtor(200.00, "Антонова", 107),
+                new Debtor(765.20, "Бочаров", 130),
+                new Debtor(444.00, "Карасева", 144),
+                new Debtor(920.35, "Петров", 9),
+                new Debtor(1290.45, "Яковлев", 21),
+                new Debtor(693.98, "Ларионова", 98),
+                new Debtor(290.32, "Шилов", 38),
+                new Debtor(881.00, "Сидоров", 14),
+                new Debtor(836.23, "Малахов", 88),
+                new Debtor(1500.00, "Савельева", 72),
+                new Debtor(10.15, "Бирюкова", 48),
+                new Debtor(150.12, "Дмитриев", 50),
+                new Debtor(233.12, "Воронина", 109),
+                new Debtor(500.00, "Мельников", 121),
+            };
     }
 }
