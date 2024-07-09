@@ -7,7 +7,7 @@ namespace C_Sharp_LINQ_lab_2
     {
         static void Main(string[] args)
         {
-            ShowList(Task6(GetDataStudent()));
+            ShowList(Task8(GetDataShop(), GetDataProduct()));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -117,7 +117,6 @@ namespace C_Sharp_LINQ_lab_2
             .Select(t => $"{t.Year} {t.Count}")
             .ToList();
         }
-        
         static List<string> Task7(List<Debtor> debtors)
             => debtors
             .Select(d => new
@@ -132,6 +131,32 @@ namespace C_Sharp_LINQ_lab_2
                 .Take(3)
                 .Select(i => new { item = $"{i.Debt} {d.Key} {i.Anumber} {i.Sname}", i.Debt }))
             .OrderByDescending(i => i.Debt).Select(i => i.item).ToList();
+        /// <summary>
+        /// Для каждой категории товаров определить количество магазинов, предлагающих товары
+        /// данной категории, а также количество стран, в которых произведены товары данной
+        /// категории, представленные в магазинах(вначале выводится количество магазинов, затем
+        /// название категории, затем количество стран). Если для некоторой категории не найдено
+        /// ни одного товара, представленного в каком- либо магазине, то информация о данной
+        /// категории не выводится.Сведения о каждой категории выводить на новой строке и
+        /// упорядочивать по убыванию количества магазинов, а в случае одинакового количества —
+        /// по названиям категорий в алфавитном порядке.
+        /// </summary>
+        /// <param name="shops"></param>
+        /// <param name="products"></param>
+        /// <returns></returns>
+        static List<string> Task8(List<Shop> shops, List<Product> products)
+            => shops.GroupJoin(products, n => n.Ararticle, s => s.Ararticle, (sh, prod) => new
+            {
+                shop = sh.Sname,
+                Category = prod.Select(n => n.Category).First(),
+                Country = prod.Select(n => n.Country).First()
+            }).GroupBy(n => n.Category).Select(g => new
+            { 
+                Category = g.Key, 
+                CountContry = g.Select(n => n.Country).Distinct().Count(), 
+                CountShop = g.Select(n => n.shop).Distinct().Count() 
+            }).OrderByDescending(n => n.CountShop).ThenBy(n => n.Category)
+            .Select(i => $"Категория: {i.Category} кол-во производителей: {i.CountContry} кол-во магазинов {i.CountShop}").ToList();
         static List<Department> GetDataDepartment()
             => new List<Department>()
             {
@@ -200,6 +225,26 @@ namespace C_Sharp_LINQ_lab_2
                 new Debtor(150.12, "Дмитриев", 50),
                 new Debtor(233.12, "Воронина", 109),
                 new Debtor(500.00, "Мельников", 121),
+            };
+        static List<Shop> GetDataShop()
+            => new List<Shop>()
+            {
+                new Shop(1, 100, "Магазин 1"),
+                new Shop(2, 200, "Магазин 1"),
+                new Shop(3, 400, "Магазин 1"),
+                new Shop(1, 400, "Магазин 2"),
+                new Shop(2, 500, "Магазин 2"),
+                new Shop(3, 600, "Магазин 2"),
+                new Shop(1, 700, "Магазин 3"),
+                new Shop(2, 800, "Магазин 3"),
+                new Shop(3, 900, "Магазин 3")
+            };
+        static List<Product> GetDataProduct()
+            => new List<Product>()
+            {
+                new Product("Дом", 1,"Россия"),
+                new Product("Авто", 2,"Россия"),
+                new Product("Семья", 3,"Китай")
             };
     }
 }
