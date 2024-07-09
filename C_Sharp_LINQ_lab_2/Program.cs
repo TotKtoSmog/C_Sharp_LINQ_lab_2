@@ -7,7 +7,7 @@ namespace C_Sharp_LINQ_lab_2
     {
         static void Main(string[] args)
         {
-            ShowList(Task7(GetDataDebtor()));
+            ShowList(Task6(GetDataStudent()));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -108,8 +108,14 @@ namespace C_Sharp_LINQ_lab_2
         /// <returns></returns>
         static List<string> Task6(List<Student> students)
         {
-            var temp = students.GroupBy(s => s.Year).Select(s => new { Year = s.Key, Count = s.Count() }).ToList();
-            return temp.Where(t => t.Count == temp.Max(tt => tt.Count) || t.Count == temp.Min(tt => tt.Count)).OrderByDescending(t => t.Count).ThenBy(s => s.Year).Select(s => $"{s.Year} {s.Count}").ToList();
+            return students
+            .GroupBy(s => s.Year)
+            .Select(s => new { Year = s.Key, Count = s.Count() })
+            .Where(t => t.Count == students.GroupBy(s => s.Year).Max(g => g.Count()) || t.Count == students.GroupBy(s => s.Year).Min(g => g.Count()))
+            .OrderByDescending(t => t.Count)
+            .ThenBy(t => t.Year)
+            .Select(t => $"{t.Year} {t.Count}")
+            .ToList();
         }
         
         static List<string> Task7(List<Debtor> debtors)
