@@ -1,6 +1,5 @@
 ﻿using C_Sharp_LINQ_lab_2.Class;
 using System.Data;
-using System.Diagnostics.Metrics;
 
 namespace C_Sharp_LINQ_lab_2
 {
@@ -290,7 +289,6 @@ namespace C_Sharp_LINQ_lab_2
                 new Product("Авто", 2,"Россия"),
                 new Product("Семья", 3,"Китай")
             };
-
         static List<ShoppingCart> GetDataShoppingCart() 
             => new List<ShoppingCart>()
             {

@@ -1,5 +1,4 @@
-﻿
-namespace C_Sharp_LINQ_lab_2.Class
+﻿namespace C_Sharp_LINQ_lab_2.Class
 {
     internal class Client
     {
