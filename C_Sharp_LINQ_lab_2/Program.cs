@@ -1,5 +1,6 @@
 ﻿using C_Sharp_LINQ_lab_2.Class;
 using System.Data;
+using System.Diagnostics.Metrics;
 
 namespace C_Sharp_LINQ_lab_2
 {
@@ -7,7 +8,7 @@ namespace C_Sharp_LINQ_lab_2
     {
         static void Main(string[] args)
         {
-            ShowList(Task8(GetDataShop(), GetDataProduct()));
+            ShowList(Task9(GetDataConsumer(), GetDataProduct(), GetDataShoppingCart()));
         }
         static void ShowList<T>(List<T> list)
         {
@@ -156,7 +157,7 @@ namespace C_Sharp_LINQ_lab_2
         /// <param name="products"></param>
         /// <returns></returns>
         static List<string> Task8(List<Shop> shops, List<Product> products)
-            => shops.GroupJoin(products, n => n.Ararticle, s => s.Ararticle, (sh, prod) => new
+            => shops.GroupJoin(products, n => n.Article, s => s.Article, (sh, prod) => new
             {
                 shop = sh.Sname,
                 Category = prod.Select(n => n.Category).First(),
@@ -168,6 +169,38 @@ namespace C_Sharp_LINQ_lab_2
                 CountShop = g.Select(n => n.shop).Distinct().Count() 
             }).OrderByDescending(n => n.CountShop).ThenBy(n => n.Category)
             .Select(i => $"Категория: {i.Category} кол-во производителей: {i.CountContry} кол-во магазинов {i.CountShop}").ToList();
+        /// <summary>
+        /// Для каждого года рождения из A определить страну, в которой было произведено 
+        /// максимальное количество товаров, приобретенных потребителями этого года
+        /// рождения(вначале выводится год, затем название страны, затем максимальное 
+        /// количество покупок). Если для некоторой пары «год–страна» отсутствует информация
+        /// о проданных товарах, то эта пара не обрабатывается(в частности, если потребители 
+        /// некоторого года рождения не сделали ни одной покупки, то информация об этом годе не
+        /// выводится). Если для какого-либо года рождения имеется несколько стран с наибольшим
+        /// числом приобретенных товаров, то выводятся данные о первой из таких 
+        /// стран(в алфавитном порядке). Сведения о каждом годе выводить на новой строке и 
+        /// упорядочивать по убыванию номера года.
+        /// </summary>
+        /// <param name="A"></param>
+        /// <param name="B"></param>
+        /// <param name="C"></param>
+        /// <returns></returns>
+        static List<string> Task9(List<Consumer> A, List<Product> B, List<ShoppingCart> C)
+            => C.GroupJoin(A, c => c.СonsumerId, a => a.СonsumerId, (sCart, Cons) => new
+            {
+                sCart.Article,
+                YearOfBirth = Cons.Select(n => n.YearOfBirth).FirstOrDefault(),
+            }).GroupJoin(B, c => c.Article, b => b.Article, (sCart, Prod) => new
+            {
+                sCart.YearOfBirth,
+                Country = Prod.Select(n => n.Country).FirstOrDefault(),
+            }).GroupBy(g => new { g.YearOfBirth, g.Country }, (key, group) => new
+            {
+                key.YearOfBirth,
+                key.Country,
+                Count = group.Count()
+            }).GroupBy(n => n.YearOfBirth).Select(g => g.OrderByDescending(x => x.Count).ThenBy(x => x.Country).First())
+            .OrderByDescending(x => x.YearOfBirth).Select(n => $"{n.YearOfBirth} {n.Country} {n.Count}").ToList();
         static List<Department> GetDataDepartment()
             => new List<Department>()
             {
@@ -256,6 +289,39 @@ namespace C_Sharp_LINQ_lab_2
                 new Product("Дом", 1,"Россия"),
                 new Product("Авто", 2,"Россия"),
                 new Product("Семья", 3,"Китай")
+            };
+
+        static List<ShoppingCart> GetDataShoppingCart() 
+            => new List<ShoppingCart>()
+            {
+                new ShoppingCart(1, 1, "Магазин 1"),
+                new ShoppingCart(2, 2, "Магазин 2"),
+                new ShoppingCart(3, 3, "Магазин 3"),
+                new ShoppingCart(1, 4, "Магазин 1"),
+                new ShoppingCart(1, 5, "Магазин 1"),
+                new ShoppingCart(1, 6, "Магазин 1"),
+                new ShoppingCart(1, 7, "Магазин 1"),
+                new ShoppingCart(1, 8, "Магазин 1"),
+                new ShoppingCart(1, 9, "Магазин 1"),
+                new ShoppingCart(1, 1, "Магазин 1"),
+                new ShoppingCart(2, 1, "Магазин 1"),
+                new ShoppingCart(1, 1, "Магазин 1")
+            };
+        static List<Consumer> GetDataConsumer()
+            => new List<Consumer>()
+            {
+                new Consumer("Улица 1", 1, 1998),
+                new Consumer("Улица 2", 2, 1980),
+                new Consumer("Улица 3", 3, 1981),
+                new Consumer("Улица 4", 4, 1981),
+                new Consumer("Улица 5", 5, 1981),
+                new Consumer("Улица 6", 6, 1981),
+                new Consumer("Улица 7", 7, 1981),
+                new Consumer("Улица 8", 8, 1981),
+                new Consumer("Улица 9", 9, 1981),
+                new Consumer("Улица 10", 10, 1981),
+                new Consumer("Улица 11", 11, 1981),
+                new Consumer("Улица 12", 12, 1998)
             };
     }
 }

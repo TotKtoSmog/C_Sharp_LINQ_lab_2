@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 
 namespace C_Sharp_LINQ_lab_2.Class
 {
-    internal class Shop
+    internal class ShoppingCart
     {
         internal int Article;
-        internal double Price;
+        internal int СonsumerId;
         internal string Sname;
-        internal Shop(int article, double price, string sname)
+
+        internal ShoppingCart(int article, int consumerId, string sname)
         {
             Article = article;
-            Price = price;
+            СonsumerId = consumerId;
             Sname = sname;
         }
     }
